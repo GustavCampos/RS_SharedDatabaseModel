@@ -1,0 +1,10 @@
+services:
+  middleware:
+    build:
+      context: ./middleware
+    ports:
+      - "5000:5000"
+    volumes:
+      - './duckdb:/usr/duckdb/'
+    environment:
+      - FLASK_APP=app.py

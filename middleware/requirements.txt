@@ -1,0 +1,7 @@
+duckdb
+duckdb-engine
+Flask
+flask_cors
+graphene
+sqlalchemy
+python-dotenv
