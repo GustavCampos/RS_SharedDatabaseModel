@@ -1,4 +1,5 @@
 # Custom ignore
+.vscode/
 duckdb/
 
 # Byte-compiled / optimized / DLL files
