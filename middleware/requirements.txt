@@ -1,7 +1,9 @@
 duckdb
 duckdb-engine
 Flask
+Flask-GraphQL
 flask_cors
 graphene
+graphene-sqlalchemy
 sqlalchemy
 python-dotenv
