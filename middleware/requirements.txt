@@ -1,9 +1,5 @@
-duckdb
 duckdb-engine
-Flask
-Flask-GraphQL
-flask_cors
-graphene
-graphene-sqlalchemy
-sqlalchemy
+fastapi
+starlette-graphene3
+graphene_sqlalchemy
 python-dotenv

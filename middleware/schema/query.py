@@ -1,22 +1,25 @@
 import graphene
 from graphene import relay
 from graphene_sqlalchemy import SQLAlchemyObjectType, SQLAlchemyConnectionField
-import database.table_model as model
+from database.table_model import \
+    Client as ClientModel, \
+    BankAccount as BankAccountModel, \
+    Transaction as TransactionModel
 
 class Client(SQLAlchemyObjectType):
     class Meta:
-        model = model.Client
+        model = ClientModel
         interfaces = (relay.Node, )
 
 class BankAccount(SQLAlchemyObjectType):
     class Meta:
-        model = model.BankAccount
+        model = BankAccountModel
         interfaces = (relay.Node, )
 
 class Transaction(SQLAlchemyObjectType):
     class Meta:
-        model = model.Transaction
-        
+        model = TransactionModel
+        interfaces = (relay.Node, )
 
 class Query(graphene.ObjectType):
     node = relay.Node.Field()
@@ -24,6 +27,3 @@ class Query(graphene.ObjectType):
     clients = SQLAlchemyConnectionField(Client.connection)
     accounts = SQLAlchemyConnectionField(BankAccount.connection)
     transactions = SQLAlchemyConnectionField(Transaction.connection)
-
-def GraphQLSchema():
-    return graphene.Schema(query=Query)

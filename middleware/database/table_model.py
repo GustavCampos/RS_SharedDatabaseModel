@@ -15,7 +15,7 @@ class Client(Base):
     
     # Client -< BankAccount
     bank_accounts = relationship("BankAccount", back_populates="owner_obj")
-    
+        
 class BankAccount(Base):
     __tablename__ = "bank_accounts"
     
@@ -28,8 +28,14 @@ class BankAccount(Base):
     owner_obj = relationship("Client", back_populates="bank_accounts")
     
     # BankAccount >- Transaction -< BankAccount
-    payer_transactions = relationship("Transaction", back_populates="payer_obj")
-    receiver_transactions = relationship("Transaction", back_populates="receiver_obj")
+    payer_transactions = relationship("Transaction", 
+        back_populates="payer_obj",
+        foreign_keys="Transaction.payer"
+    )
+    receiver_transactions = relationship("Transaction", 
+        back_populates="receiver_obj", 
+        foreign_keys="Transaction.receiver"
+    )
     
 class Transaction(Base):
     __tablename__ = "transactions"
@@ -37,9 +43,9 @@ class Transaction(Base):
     id = Column(BigInteger, Sequence("transaction_id_seq"), primary_key=True)
     timestamp = Column(TIMESTAMP, nullable=False)
     transaction_type = Column(
-        Enum("withdrawal", "deposit", "transfer"), 
+        Enum("withdrawal", "deposit", "transfer", name="transaction_types"), 
         name="type", nullable=False
-    ),
+    )
     
     payer = Column(
         ForeignKey("bank_accounts.id"), 
@@ -54,8 +60,11 @@ class Transaction(Base):
     amount = Column(BigInteger, nullable=False)
     
     # BankAccount >- Transaction -< BankAccount
-    payer_obj = relationship("BankAccount", back_populates="payer_transactions")
-    receiver_obj = relationship("Transaction", back_populates="receiver_transactions")
-
-def GetDeclarativeBase():
-    return Base
+    payer_obj = relationship("BankAccount", 
+        back_populates="payer_transactions", 
+        foreign_keys=[payer]
+    )
+    receiver_obj = relationship("BankAccount", 
+        back_populates="receiver_transactions", 
+        foreign_keys=[receiver]
+    )
