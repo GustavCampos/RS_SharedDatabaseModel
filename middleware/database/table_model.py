@@ -1,4 +1,4 @@
-from sqlalchemy import Column, BigInteger, String, Integer, ForeignKey, Enum, TIMESTAMP, Sequence
+from sqlalchemy import Column, BigInteger, String, ForeignKey, Enum, TIMESTAMP, Sequence
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
 
@@ -10,6 +10,7 @@ class Client(Base):
     __tablename__ = "clients"
     
     id = Column(BigInteger, Sequence("client_id_seq"),primary_key=True)
+    cpf = Column(String, nullable=False, unique=True)
     complete_name = Column(String, nullable=False)
     
     # Client -< BankAccount
