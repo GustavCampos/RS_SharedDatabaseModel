@@ -55,3 +55,6 @@ class Transaction(Base):
     # BankAccount >- Transaction -< BankAccount
     payer_obj = relationship("BankAccount", back_populates="payer_transactions")
     receiver_obj = relationship("Transaction", back_populates="receiver_transactions")
+
+def GetDeclarativeBase():
+    return Base
