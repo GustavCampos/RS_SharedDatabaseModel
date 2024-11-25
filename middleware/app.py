@@ -3,10 +3,9 @@ from dotenv import load_dotenv
 from flask import Flask, g
 from flask_cors import CORS
 from sqlalchemy import create_engine
-from strawberry.flask.views import GraphQLView
 from database import get_declarative_base
-from sqlalchemy.orm import sessionmaker, scoped_session, Session
-from schema import get_graphql_schema
+from sqlalchemy.orm import sessionmaker, scoped_session
+from schema import CustomGraphQLView, get_graphql_schema
 
 
 # Load env files on development
@@ -41,7 +40,7 @@ def teardown_request(exception=None):
         g.db_session.close()
 
 app.add_url_rule("/graphql", methods=["POST"],
-    view_func=GraphQLView.as_view(
+    view_func=CustomGraphQLView.as_view(
         name="graphql_view",
         schema=get_graphql_schema(),
         graphiql=True
