@@ -1,49 +1,52 @@
 import os
 from dotenv import load_dotenv
-from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
-from starlette_graphene3 import GraphQLApp
-from sqlalchemy.orm import sessionmaker
-from database import get_database_engine
-from schema.query import get_graphql_schema
+from flask import Flask, g
+from flask_cors import CORS
+from sqlalchemy import create_engine
+from strawberry.flask.views import GraphQLView
+from database import get_declarative_base
+from sqlalchemy.orm import sessionmaker, scoped_session, Session
+from schema import get_graphql_schema
+
 
 # Load env files on development
 load_dotenv()
 
 # Constants
-DEBUG_MODE = bool(int(os.getenv("DEBUG_MODE")))
-SESSION_MAKER = sessionmaker(
-    bind=get_database_engine(), 
-    autocommit=False, 
-    autoflush=False
-)
-
-def get_session():
-    db = SESSION_MAKER()
-    try:
-        yield db
-    finally:
-        db.close()
-
-app = FastAPI() # Create App
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
-
-app.add_route("/graphql", 
-    GraphQLApp(
-        schema=get_graphql_schema(), 
-        context_value={'session': get_session}
+DEBUG_MODE = bool(int(os.getenv("FLASK_DEBUG")))
+ENGINE = create_engine("duckdb:///" + os.path.realpath(os.getenv("DATABASE_PATH")))
+SQA_BASE = get_declarative_base()
+SESSION_MAKER = scoped_session(
+    sessionmaker(
+        bind=ENGINE, 
+        autocommit=False, 
+        autoflush=False
     )
 )
 
-@app.teardown_appcontext
-def shutdown_session(exception=None):
-    SESSION_MAKER.close_all()
+# # Setup database
+SQA_BASE.metadata.create_all(bind=ENGINE) # Create tables in case not exist
+SQA_BASE.metadata.reflect(bind=ENGINE) # Load metadata
 
+app = Flask(__name__) # Create App
+CORS(app) # Allow CORS
+
+@app.before_request
+def before_request():
+    g.db_session = SESSION_MAKER()
+
+@app.teardown_request
+def teardown_request(exception=None):
+    if hasattr(g, 'db_session'):
+        g.db_session.close()
+
+app.add_url_rule("/graphql", methods=["POST"],
+    view_func=GraphQLView.as_view(
+        name="graphql_view",
+        schema=get_graphql_schema(),
+        graphiql=True
+    )
+)
+    
 if __name__ == "__main__":
     app.run(debug=DEBUG_MODE)

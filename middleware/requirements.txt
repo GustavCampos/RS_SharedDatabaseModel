@@ -1,5 +1,5 @@
+strawberry-graphql[flask]
+strawberry-sqlalchemy-mapper
 duckdb-engine
-fastapi
-starlette-graphene3
-graphene_sqlalchemy
+flask_cors
 python-dotenv
