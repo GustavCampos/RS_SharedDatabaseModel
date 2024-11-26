@@ -2,7 +2,7 @@ from typing import Union
 from strawberry.http.typevars import Context
 from flask import Request, Response, g
 import strawberry
-from strawberry.flask.views import GraphQLView
+from strawberry.flask.views import AsyncGraphQLView, GraphQLView
 from strawberry_sqlalchemy_mapper import StrawberrySQLAlchemyLoader
 from .query import Query, strawberry_sqlalchemy_mapper
 from .mutation import Mutation
@@ -27,12 +27,13 @@ def get_graphql_schema():
         scalar_overrides={
             int: BigInt
         },
-        types=additional_types
+        types=additional_types,
     )
 
 class CustomGraphQLView(GraphQLView):
     def get_context(self, request: Request, response: Response) -> Context:
         return {
             **super().get_context(request, response),
+            "db_session": g.db_session,
             "sqlalchemy_loader": StrawberrySQLAlchemyLoader(bind=g.db_session),
         }

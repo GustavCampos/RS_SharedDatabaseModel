@@ -2,29 +2,39 @@ from typing import Optional
 from flask import g
 import strawberry
 from strawberry_sqlalchemy_mapper import StrawberrySQLAlchemyMapper
+from sqlalchemy.orm import joinedload
 import database.table_model as models
-import asyncio
 
 
 strawberry_sqlalchemy_mapper = StrawberrySQLAlchemyMapper()
-@strawberry_sqlalchemy_mapper.type(models.Client)
-class Client():
-    pass
-
-@strawberry_sqlalchemy_mapper.type(models.BankAccount)
-class BankAccount():
-    pass
 
 @strawberry_sqlalchemy_mapper.type(models.Transaction)
 class Transaction():
     pass
+@strawberry_sqlalchemy_mapper.type(models.BankAccount)
+class BankAccount():
+    pass
+@strawberry.type
+class BankAccountEdge:
+    node: BankAccount
+@strawberry.type
+class BankAccountConnection:
+    edges: list[BankAccountEdge]
+@strawberry_sqlalchemy_mapper.type(models.Client)
+class Client():
+    @strawberry.field
+    def bank_accounts(self) -> BankAccountConnection:
+        accounts = self.bank_accounts
+        
+        return BankAccountConnection(
+            edges=[BankAccountEdge(node=account) for account in accounts]
+        )
 
 @strawberry.type
 class Query():
     @strawberry.field
     def clients(self, info: strawberry.Info, name_like: Optional[str] = None) -> list[Client]:
-        session = g.db_session
-        print(info.context["sqlalchemy_loader"])
+        session = info.context["db_session"]
 
         query = session.query(models.Client)
 
@@ -93,7 +103,7 @@ class Query():
         payer_account: Optional[int] = None,
         payer_name_like: Optional[str] = None,
         payer_cpf: Optional[str] = None,
-        # Payer filters
+        # Receiver filters
         receiver_id: Optional[int] = None,
         receiver_account: Optional[int] = None,
         receiver_name_like: Optional[str] = None,

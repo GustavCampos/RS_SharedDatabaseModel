@@ -26,7 +26,7 @@ class Mutation():
         client = session.query(models.Client).filter_by(id=id).first()
 
         if client is None:
-            ValueError("Client not found")
+            raise ValueError("Client not found")
 
         if cpf is not None:
             client.cpf = cpf
@@ -44,7 +44,7 @@ class Mutation():
         client = session.query(models.Client).filter_by(id=id).first()
 
         if client is None:
-            ValueError("Client not found")
+            raise ValueError("Client not found")
 
         session.delete(client)
         session.commit()
