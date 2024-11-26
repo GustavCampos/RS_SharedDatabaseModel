@@ -1,37 +1,11 @@
-from typing import Optional
-from flask import g
 import strawberry
-from strawberry_sqlalchemy_mapper import StrawberrySQLAlchemyMapper
-from sqlalchemy.orm import joinedload
-import database.table_model as models
+import database.table_model as models 
+from typing import Optional
+from .model import Client, BankAccount, Transaction
 
-
-strawberry_sqlalchemy_mapper = StrawberrySQLAlchemyMapper()
-
-@strawberry_sqlalchemy_mapper.type(models.Transaction)
-class Transaction():
-    pass
-@strawberry_sqlalchemy_mapper.type(models.BankAccount)
-class BankAccount():
-    pass
-@strawberry.type
-class BankAccountEdge:
-    node: BankAccount
-@strawberry.type
-class BankAccountConnection:
-    edges: list[BankAccountEdge]
-@strawberry_sqlalchemy_mapper.type(models.Client)
-class Client():
-    @strawberry.field
-    def bank_accounts(self) -> BankAccountConnection:
-        accounts = self.bank_accounts
-        
-        return BankAccountConnection(
-            edges=[BankAccountEdge(node=account) for account in accounts]
-        )
 
 @strawberry.type
-class Query():
+class Query:
     @strawberry.field
     def clients(self, info: strawberry.Info, name_like: Optional[str] = None) -> list[Client]:
         session = info.context["db_session"]
@@ -46,16 +20,18 @@ class Query():
     
     @strawberry.field
     def client(self, info: strawberry.Info, id: Optional[int] = None, cpf: Optional[str] = None) -> Optional[Client]:
-        session = g.db_session
-        
+        session = info.context["db_session"]
+
+        query = session.query(models.Client)
+
         if id is not None:
-            client = session.query(models.Client).filter_by(id=id).first()
+            query = query.filter_by(id=id)
         elif cpf is not None:
-            client = session.query(models.Client).filter_by(cpf=cpf).first()
+            query = query.filter_by(cpf=cpf)
         else:
-            raise ValueError("You must provide either 'id' or 'cpf'")
-        
-        return (None, client)[client is not None]
+            query = query.filter_by(id=1)
+                    
+        return query.first()
     
     @strawberry.field
     def bank_accounts(self, info, 
@@ -65,7 +41,7 @@ class Query():
         balance_less_than: Optional[int] = None,
         balance_greater_than: Optional[int] = None
     ) -> list[BankAccount]:
-        session = g.db_session
+        session = info.context["db_session"]
 
         query = session.query(models.BankAccount)
 
@@ -84,10 +60,12 @@ class Query():
         return query.all()
     
     @strawberry.field
-    def bank_account(self, info: strawberry.Info, id: int) -> Optional[BankAccount]:
-        session = g.db_session
-        account = session.query(models.BankAccount).filter_by(id=id).first()
-        return (None, account)[account is not None]
+    def bank_account(self, info: strawberry.Info, id: int=1) -> Optional[BankAccount]:
+        session = info.context["db_session"]
+        
+        query = session.query(models.BankAccount).filter_by(id=id)
+        
+        return query.first()
     
     @strawberry.field
     def transactions(self, info: strawberry.Info,
@@ -110,9 +88,9 @@ class Query():
         receiver_cpf: Optional[str] = None,
 
     ) -> list[Transaction]:
-        session = g.db_session
+        session = info.context["db_session"]
 
-        query = session.query(models.Transactions)
+        query = session.query(models.Transaction)
 
         if transaction_type:
             query = query.filter(models.Transaction.transaction_type == transaction_type)
@@ -145,6 +123,9 @@ class Query():
 
     @strawberry.field
     def transaction(self, info: strawberry.Info, id: int) -> Optional[Transaction]:
-        session = g.db_session
-        transaction = session.query(models.Transaction).filter_by(id=id).first()
-        return (None, transaction)[transaction is not None]
+        session = info.context["db_session"]
+        
+        query = session.query(models.Transaction).filter_by(id=id)
+        
+        return query.first()
+    

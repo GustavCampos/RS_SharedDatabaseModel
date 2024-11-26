@@ -1,5 +1,5 @@
 from sqlalchemy import Column, BigInteger, String, ForeignKey, Enum, TIMESTAMP, Sequence
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship, validates
 from sqlalchemy.ext.declarative import declarative_base
 
 
@@ -46,18 +46,9 @@ class Transaction(Base):
         Enum("withdrawal", "deposit", "transfer", name="transaction_types"), 
         name="type", nullable=False
     )
-    
-    payer = Column(
-        ForeignKey("bank_accounts.id"), 
-        nullable=lambda context: context.get_current_parameters()["transaction_type"] != "deposit"
-    )
-    
-    receiver = Column(
-        ForeignKey("bank_accounts.id"), 
-        nullable=lambda context: context.get_current_parameters()["transaction_type"] != "withdrawal"
-    )
-    
     amount = Column(BigInteger, nullable=False)
+    payer = Column(ForeignKey("bank_accounts.id"), nullable=True)
+    receiver = Column(ForeignKey("bank_accounts.id"), nullable=True)
     
     # BankAccount >- Transaction -< BankAccount
     payer_obj = relationship("BankAccount", 
@@ -68,3 +59,15 @@ class Transaction(Base):
         back_populates="receiver_transactions", 
         foreign_keys=[receiver]
     )
+    
+    @validates('payer')
+    def validate_payer(self, key, value):
+        if self.transaction_type in ['transfer', 'withdrawal'] and value is None:
+            raise ValueError(f"Receiver must exist for {self.transaction_type} transactions.")
+        return value
+
+    @validates('receiver')
+    def validate_receiver(self, key, value):
+        if self.transaction_type in ['transfer', 'deposit'] and value is None:
+            raise ValueError(f"Receiver must exist for {self.transaction_type} transactions.")
+        return value

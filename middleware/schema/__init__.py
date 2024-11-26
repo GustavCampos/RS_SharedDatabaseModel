@@ -1,12 +1,12 @@
+import strawberry
 from typing import Union
 from strawberry.http.typevars import Context
 from flask import Request, Response, g
-import strawberry
-from strawberry.flask.views import AsyncGraphQLView, GraphQLView
+from strawberry.flask.views import GraphQLView
 from strawberry_sqlalchemy_mapper import StrawberrySQLAlchemyLoader
-from .query import Query, strawberry_sqlalchemy_mapper
+from .model import strawberry_sqlalchemy_mapper
+from .query import Query
 from .mutation import Mutation
-
 
 # BigInt workaround
 BigInt = strawberry.scalar(
