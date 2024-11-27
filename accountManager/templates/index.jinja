@@ -8,8 +8,8 @@
         <div class="box">
             <h1 class="title is-3 has-text-centered">Manage Clients</h1>
             <div class="buttons is-centered">
-                {{ button('Create User', 'primary') }}
-                {{ button('View Users', additional_classes="is-outlined") }}
+                {{ button('Create User', url=URL['CLIENTS']["CREATE"], color='primary') }}
+                {{ button('View Users', url=URL['CLIENTS']["LIST"], additional_classes="is-outlined") }}
             </div>
         </div>
     </div>
@@ -17,8 +17,8 @@
         <div class="box">
             <h1 class="title is-3 has-text-centered">Manage Bank Accounts</h1>
             <div class="buttons is-centered">
-                {{ button('Create Account', 'primary') }}
-                {{ button('View Accounts', additional_classes="is-outlined") }}
+                {{ button('Create Account', url=URL['BANK_ACCOUNTS']["CREATE"], color='primary') }}
+                {{ button('View Accounts', url=URL['BANK_ACCOUNTS']["LIST"], additional_classes="is-outlined") }}
             </div>
         </div>
     </div>

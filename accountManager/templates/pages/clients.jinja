@@ -1,0 +1,10 @@
+{% extends "components/html.jinja" %}
+{% from "components/macros/table.jinja" import clickable_table%}
+
+{% block content %}
+
+<section class="container">
+    <h1 class="title">Clients List</h1>
+    {{ clickable_table(**clients_table) }}
+</section>
+{% endblock content %}

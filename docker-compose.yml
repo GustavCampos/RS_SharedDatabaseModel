@@ -3,7 +3,7 @@ services:
     build:
       context: ./middleware
     ports:
-      - "5000:5000" # <HOST:CONTAINER>
+      - "5001:5000" # <HOST:CONTAINER>
     volumes:
       - './duckdb:/usr/duckdb/'
     environment:

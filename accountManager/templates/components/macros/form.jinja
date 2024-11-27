@@ -51,7 +51,7 @@
 </div>
 {% endmacro %}
 
-{% macro bulma_submit_button(text="Submit", id=None, color="primary", size="", is_fullwidth=False, is_disabled=False, additional_classes="") %}
+{% macro submit_button(text="Submit", id=None, color="primary", size="", is_fullwidth=False, is_disabled=False, additional_classes="") %}
 <button
     type="submit"
     id="{{ id if id else '' }}"
