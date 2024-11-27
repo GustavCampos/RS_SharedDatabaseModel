@@ -34,4 +34,4 @@ def get_clients():
     
 @client_bp.route(f"{GV["URL"]["CLIENTS"]["LIST"]}/<client_id>")
 def get_client(client_id):
-    return f"jorge: {client_id}"
+    return handler.get_client(client_id)
