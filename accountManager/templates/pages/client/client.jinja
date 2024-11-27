@@ -1,0 +1,43 @@
+{% extends "components/html.jinja" %}
+{% import "components/macros/form.jinja" as f %}
+{% from "components/macros/table.jinja" import clickable_table %}
+
+{% block content %}
+<main class="container">
+    <div class="columns is-centered">
+        <div class="column is-half">
+            <div class="box">
+                {% call f.form(url=update_url, method="POST") %}                    
+                    {{ f.input(name="ID", value=client["id"], type="hidden") }}
+
+                    <div class="level">
+                        <div class="level-left">
+                            <h1 class="title">ID:{{ client["id"] }} Client</h1>
+                        </div>
+
+                        <div class="level-right">
+                            {{ f.submit_button(text="Update") }}    
+                        </div>
+                    </div>
+                    
+
+                    <div class="columns">
+                        <div class="column">
+                            {% call f.form_field("Complete Name") %}
+                                {{ f.input(name="Complete Name", value=client["completeName"]) }}
+                            {% endcall %}
+                        </div>
+                        <div class="column">
+                            {% call f.form_field("CPF") %} 
+                                {{ f.input(name="CPF", value=client["cpf"]) }}
+                            {% endcall %}
+                        </div>
+                    </div>
+                {% endcall %}
+            </div>
+        </div>
+    </div>
+
+    {{ clickable_table(**bank_accounts_table) }}
+</main>
+{% endblock content %}

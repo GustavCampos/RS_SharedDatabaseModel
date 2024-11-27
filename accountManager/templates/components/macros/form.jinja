@@ -1,3 +1,10 @@
+
+{% macro form(url, method="GET") %}
+<form action="{{ url }}" method="{{ method }}">
+    {{ caller() }}
+</form>
+{% endmacro %}
+
 {% macro form_field(label=None, help_text=None, field_classes="") %}
 <div class="field {{ field_classes }}">
     {% if label %}

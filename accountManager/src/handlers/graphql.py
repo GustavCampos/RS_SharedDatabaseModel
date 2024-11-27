@@ -6,6 +6,8 @@ class GraphQLHandler:
         self.url = graphql_endpoint
         
     def _execute_query(self, query_file: str, **variables) -> dict | None:
+        variables = variables or {}
+        
         with open(realpath(query_file), "r") as file:
             query = file.read()
             

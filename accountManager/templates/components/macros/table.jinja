@@ -1,22 +1,36 @@
-{% macro clickable_table(headers, rows, url_key, mask=None) %}
+{% from "components/macros/button.jinja" import button %}
+
+{% macro clickable_table(headers, rows, name=None, url_key=None, mask=None, create_button=None) %}
 <div class="table-component">
-  <!-- Filter Input -->
-  <input 
-    type="text" 
-    id="tableFilter"
-    class="input is-small" 
-    placeholder="Filter..." 
-    oninput="filterTable(event, 'clickableTable')" 
-    style="margin-bottom: 1rem;"
-  />
+  <div class="level">
+    {% if name %}
+    <div class="level-left">
+        <div class="level-item">
+          <p class="title is-3">{{ name }}</p>
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="level-right">
+      <div class="level-item">
+        <input type="text" class="input" placeholder="Filter..."/>
+      </div>
+
+      {% if create_button %}  
+      <div class="level-item">
+        {{ button(**create_button) }}
+      </div>
+      {% endif %}
+    </div>
+  </div>
 
   <div class="table-container">
-    <table class="table is-bordered is-stripped is-hoverable is-fullwidth">
+    <table id="table"class="table is-bordered is-stripped is-hoverable is-fullwidth">
       <thead>
         <tr>
           {% for header in headers %}
-          <th onclick="sortTable(event, 'clickableTable', {{ loop.index0 }})" style="cursor: pointer;">
-            {{ header }} 
+          <th data-column-index="{{ loop.index0 }}" style="cursor: pointer;">
+            {{ header }}
             
             <span class="icon">
               <i class="fa-solid fa-sort"></i>
@@ -27,13 +41,16 @@
       </thead>
       <tbody>
         {% for row in rows %}
-        <tr onclick="accessTableItem(event, '{{ row[url_key] }}')" class="has-text-link" style="cursor: pointer;">
+        <tr 
+          {% if url_key %}          
+          onclick="accessTableItem(event, '{{ row[url_key] }}')" 
+          {% endif %}
+          class="has-text-link" style="cursor: pointer;">
           {% for key, value in row.items() %}
             {% if key != url_key %}
             <td 
               {% if mask and key in mask %}
                 data-mask="{{ mask[key] }}" 
-                data-value="{{ value }}"
               {% endif %}
             >{{ value }}</td>
             {% endif %}
