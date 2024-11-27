@@ -1,0 +1,21 @@
+query GetBankAccounts (
+  $owner_id: BigInt,
+  $owner_cpf: String,
+  $owner_name_like: String,
+  $balance_less_than: BigInt,
+  $balance_greater_than: BigInt
+) {
+  bankAccounts(
+    ownerId: $owner_id,
+    ownerCpf: $owner_cpf,
+    ownerNameLike: $owner_name_like,
+    balanceLessThan: $balance_less_than,
+    balanceGreaterThan: $balance_greater_than
+  ) {
+    id
+    ownerObj {
+      id
+      completeName
+    }
+  }
+}

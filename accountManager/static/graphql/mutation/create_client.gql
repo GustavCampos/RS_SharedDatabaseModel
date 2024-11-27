@@ -1,0 +1,7 @@
+mutation CreateClient ($cpf: String!, $completeName: String!) {
+	addClient (cpf: $cpf, completeName: $completeName) {
+		id
+		cpf
+		completeName
+	}
+}

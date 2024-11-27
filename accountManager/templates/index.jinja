@@ -1,0 +1,27 @@
+{% extends "components/html.jinja" %}
+{% from "components/macros/button.jinja" import button %}
+
+{% block content %}
+<div class="container"></div>
+<div class="columns is-centered" style="width: 50%; margin: 0 auto;">
+    <div class="column is-half">
+        <div class="box">
+            <h1 class="title is-3 has-text-centered">Manage Clients</h1>
+            <div class="buttons is-centered">
+                {{ button('Create User', 'primary') }}
+                {{ button('View Users', additional_classes="is-outlined") }}
+            </div>
+        </div>
+    </div>
+    <div class="column is-half">
+        <div class="box">
+            <h1 class="title is-3 has-text-centered">Manage Bank Accounts</h1>
+            <div class="buttons is-centered">
+                {{ button('Create Account', 'primary') }}
+                {{ button('View Accounts', additional_classes="is-outlined") }}
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+{% endblock content %}

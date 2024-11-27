@@ -1,0 +1,27 @@
+# Get all transactions given filter
+query transactions(
+    $transactionType: String
+    $datetimeLessThan: String
+    $datetimeGreaterThan: String
+    $amountLessThan: BigInt
+    $amountGreaterThan: BigInt
+    $payerId: BigInt
+    $receiverId: BigInt
+) {
+    transactions(
+        transactionType: $transactionType
+        datetimeLessThan: $datetimeLessThan
+        datetimeGreaterThan: $datetimeGreaterThan
+        amountLessThan: $amountLessThan
+        amountGreaterThan: $amountGreaterThan
+        payerId: $payerId
+        receiverId: $receiverId
+    ) {
+        id
+        transactionType
+        timestamp
+        amount
+        payer
+        receiver
+    }
+}

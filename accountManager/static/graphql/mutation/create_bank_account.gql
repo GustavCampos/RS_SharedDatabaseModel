@@ -1,0 +1,11 @@
+mutation CreateBankAccount ($owner: Union!, $pwd: String!) {
+	addBankAccount (owner: $owner, password: $pwd) {
+		id
+		balance
+		ownerObj {
+			id
+			cpf
+			completeName
+		}
+	}
+}

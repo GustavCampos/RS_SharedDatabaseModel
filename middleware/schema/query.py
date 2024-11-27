@@ -1,7 +1,7 @@
 import strawberry
 import database.table_model as models 
 from typing import Optional
-from .model import Client, BankAccount, Transaction
+from .model import Client, BankAccount, Transaction, BigInt
 
 
 @strawberry.type
@@ -19,7 +19,7 @@ class Query:
 
     
     @strawberry.field
-    def client(self, info: strawberry.Info, id: Optional[int] = None, cpf: Optional[str] = None) -> Optional[Client]:
+    def client(self, info: strawberry.Info, id: Optional[BigInt] = None, cpf: Optional[str] = None) -> Optional[Client]:
         session = info.context["db_session"]
 
         query = session.query(models.Client)
@@ -35,11 +35,11 @@ class Query:
     
     @strawberry.field
     def bank_accounts(self, info, 
-        owner_id: Optional[int] = None, 
+        owner_id: Optional[BigInt] = None, 
         owner_cpf: Optional[str] = None, 
         owner_name_like: Optional[str] = None,
-        balance_less_than: Optional[int] = None,
-        balance_greater_than: Optional[int] = None
+        balance_less_than: Optional[BigInt] = None,
+        balance_greater_than: Optional[BigInt] = None
     ) -> list[BankAccount]:
         session = info.context["db_session"]
 
@@ -60,7 +60,7 @@ class Query:
         return query.all()
     
     @strawberry.field
-    def bank_account(self, info: strawberry.Info, id: int=1) -> Optional[BankAccount]:
+    def bank_account(self, info: strawberry.Info, id: BigInt=1) -> Optional[BankAccount]:
         session = info.context["db_session"]
         
         query = session.query(models.BankAccount).filter_by(id=id)
@@ -74,16 +74,16 @@ class Query:
         datetime_less_than: Optional[str] = None,
         datetime_greater_than: Optional[str] = None,
         # amount filters
-        amount_less_than: Optional[int] = None,
-        amount_greater_than: Optional[int] = None,
+        amount_less_than: Optional[BigInt] = None,
+        amount_greater_than: Optional[BigInt] = None,
         # Payer filters
-        payer_id: Optional[int] = None,
-        payer_account: Optional[int] = None,
+        payer_id: Optional[BigInt] = None,
+        payer_account: Optional[BigInt] = None,
         payer_name_like: Optional[str] = None,
         payer_cpf: Optional[str] = None,
         # Receiver filters
-        receiver_id: Optional[int] = None,
-        receiver_account: Optional[int] = None,
+        receiver_id: Optional[BigInt] = None,
+        receiver_account: Optional[BigInt] = None,
         receiver_name_like: Optional[str] = None,
         receiver_cpf: Optional[str] = None,
 
@@ -122,7 +122,7 @@ class Query:
         return query.all()
 
     @strawberry.field
-    def transaction(self, info: strawberry.Info, id: int) -> Optional[Transaction]:
+    def transaction(self, info: strawberry.Info, id: BigInt) -> Optional[Transaction]:
         session = info.context["db_session"]
         
         query = session.query(models.Transaction).filter_by(id=id)

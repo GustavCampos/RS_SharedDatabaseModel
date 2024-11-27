@@ -1,0 +1,10 @@
+mutation DeleteBankAccount ($id: Union!) {
+	deleteBankAccount (id: $id) {
+		id
+		ownerObj {
+			id
+			cpf
+			completeName
+		}
+	}
+}

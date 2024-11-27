@@ -1,20 +1,11 @@
 import strawberry
-from typing import Union
 from strawberry.http.typevars import Context
 from flask import Request, Response, g
 from strawberry.flask.views import GraphQLView
 from strawberry_sqlalchemy_mapper import StrawberrySQLAlchemyLoader
-from .model import strawberry_sqlalchemy_mapper
+from .model import strawberry_sqlalchemy_mapper, BigInt
 from .query import Query
 from .mutation import Mutation
-
-# BigInt workaround
-BigInt = strawberry.scalar(
-    Union[int, str],
-    serialize=lambda value: int(value),
-    parse_value=lambda value: str(value),
-    description="BigInt field"
-)
 
 
 def get_graphql_schema():
@@ -24,9 +15,7 @@ def get_graphql_schema():
     return strawberry.Schema(
         query=Query, 
         mutation=Mutation, 
-        scalar_overrides={
-            int: BigInt
-        },
+        scalar_overrides={int: BigInt},
         types=additional_types,
     )
 

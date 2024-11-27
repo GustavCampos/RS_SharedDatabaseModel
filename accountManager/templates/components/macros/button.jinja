@@ -1,0 +1,12 @@
+{% macro button(text, url="#", color="primary", size="", is_fullwidth=False, is_disabled=False, icon=None, id=None, additional_classes="") %}
+<a href="{{ url }}"
+   id="{{ id if id else '' }}"
+   class="button {{ 'is-' + color if color }} {{ 'is-' + size if size }} {{ 'is-fullwidth' if is_fullwidth }} {{ 'is-disabled' if is_disabled }} {{ additional_classes }}">
+    {% if icon %}
+        <span class="icon">
+            <i class="{{ icon }}"></i>
+        </span>
+    {% endif %}
+    <span>{{ text }}</span>
+</a>
+{% endmacro %}

@@ -14,6 +14,7 @@ load_dotenv()
 # Constants
 DEBUG_MODE = bool(int(os.getenv("FLASK_DEBUG")))
 ENGINE = create_engine("duckdb:///" + os.path.realpath(os.getenv("DATABASE_PATH")))
+print(ENGINE)
 SQA_BASE = get_declarative_base()
 SESSION_MAKER = scoped_session(
     sessionmaker(

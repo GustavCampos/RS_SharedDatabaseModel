@@ -1,0 +1,7 @@
+query GetClients ($nameLike: String) {
+	clients (nameLike: $nameLike)  {
+		id
+		cpf
+		completeName
+	}
+}

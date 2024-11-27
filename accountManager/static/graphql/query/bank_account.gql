@@ -1,0 +1,11 @@
+query GetBankAccount ($id: Union!) {
+	bankAccount (id: $id) {
+		id
+		balance
+		ownerObj {
+			id
+			cpf
+			completeName
+		}
+	}
+}

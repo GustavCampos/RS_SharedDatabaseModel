@@ -1,0 +1,62 @@
+{% macro form_field(label=None, help_text=None, field_classes="") %}
+<div class="field {{ field_classes }}">
+    {% if label %}
+        <label class="label">{{ label }}</label>
+    {% endif %}
+    {{ caller() }}
+    {% if help_text %}
+        <p class="help">{{ help_text }}</p>
+    {% endif %}
+</div>
+{% endmacro %}
+
+{% macro input(type="text", name="", value="", placeholder="", id=None, classes="", is_disabled=False, is_readonly=False) %}
+<input
+    type="{{ type }}"
+    name="{{ name }}"
+    value="{{ value }}"
+    id="{{ id if id else name }}"
+    class="input {{ classes }}"
+    placeholder="{{ placeholder }}"
+    {% if is_disabled %}disabled{% endif %}
+    {% if is_readonly %}readonly{% endif %}>
+{% endmacro %}
+
+{% macro select(name="", options=[], selected=None, id=None, classes="", is_disabled=False) %}
+<div class="select {{ classes }}">
+    <select name="{{ name }}" id="{{ id if id else name }}" {% if is_disabled %}disabled{% endif %}>
+        {% for option_value, option_label in options %}
+            <option value="{{ option_value }}" {% if option_value == selected %}selected{% endif %}>
+                {{ option_label }}
+            </option>
+        {% endfor %}
+    </select>
+</div>
+{% endmacro %}
+
+{% macro checkbox(name="", value="", label="", id=None, is_checked=False, is_disabled=False, classes="") %}
+<div class="field">
+    <div class="control">
+        <label class="checkbox {{ classes }}">
+            <input
+                type="checkbox"
+                name="{{ name }}"
+                value="{{ value }}"
+                id="{{ id if id else name }}"
+                {% if is_checked %}checked{% endif %}
+                {% if is_disabled %}disabled{% endif %}>
+            {{ label }}
+        </label>
+    </div>
+</div>
+{% endmacro %}
+
+{% macro bulma_submit_button(text="Submit", id=None, color="primary", size="", is_fullwidth=False, is_disabled=False, additional_classes="") %}
+<button
+    type="submit"
+    id="{{ id if id else '' }}"
+    class="button {{ 'is-' + color if color }} {{ 'is-' + size if size }} {{ 'is-fullwidth' if is_fullwidth }} {{ additional_classes }}"
+    {% if is_disabled %}disabled{% endif %}>
+    {{ text }}
+</button>
+{% endmacro %}

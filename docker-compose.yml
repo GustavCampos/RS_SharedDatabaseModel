@@ -3,8 +3,11 @@ services:
     build:
       context: ./middleware
     ports:
-      - "5000:5000"
+      - "5000:5000" # <HOST:CONTAINER>
     volumes:
       - './duckdb:/usr/duckdb/'
     environment:
+      - DATABASE_PATH=/usr/duckdb/database.duckdb
       - FLASK_APP=app.py
+      - FLASK_DEBUG=0
+  

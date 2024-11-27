@@ -1,0 +1,7 @@
+mutation UpdateClient ($id: Union!, $cpf: String, $completeName: String) {
+	updateClient (id: $id, cpf: $cpf, completeName: $completeName) {
+		id
+		cpf
+		completeName
+	}
+}

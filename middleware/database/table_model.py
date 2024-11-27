@@ -25,7 +25,7 @@ class BankAccount(Base):
     password = Column(String, nullable=False)
     
     # Client -< BankAccount
-    owner_obj = relationship("Client", back_populates="bank_accounts")
+    owner_obj = relationship("Client", back_populates="bank_accounts", uselist=False)
     
     # BankAccount >- Transaction -< BankAccount
     payer_transactions = relationship("Transaction", 
@@ -53,11 +53,14 @@ class Transaction(Base):
     # BankAccount >- Transaction -< BankAccount
     payer_obj = relationship("BankAccount", 
         back_populates="payer_transactions", 
-        foreign_keys=[payer]
+        foreign_keys=[payer],
+        uselist=False,
     )
+
     receiver_obj = relationship("BankAccount", 
         back_populates="receiver_transactions", 
-        foreign_keys=[receiver]
+        foreign_keys=[receiver],
+        uselist=False,
     )
     
     @validates('payer')

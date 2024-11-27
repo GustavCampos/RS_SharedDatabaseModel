@@ -1,0 +1,17 @@
+{% from "components/macros/button.jinja" import button %}
+
+{% set button_color = "primary"%}
+
+{% block header %}
+<header class="navbar is-primary" role="navigation", aria-label="navegation">
+    <nav class="navbar-menu">
+        <div class="navbar-start">
+            <div class="buttons">
+                {{ button(text="Home", color=button_color, url="/", additional_classes="navbar-item") }}
+                {{ button(text="Clients", color=button_color, url="/clients", additional_classes="navbar-item") }}
+                {{ button(text="Accounts", color=button_color, url="/accounts", additional_classes="navbar-item") }}
+            </div>
+        </div>
+    </nav>
+</header>
+{% endblock header %}

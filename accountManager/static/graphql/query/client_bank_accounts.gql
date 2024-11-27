@@ -1,0 +1,12 @@
+# Query all bank accounts for a given client
+query GetClientBankAccounts ($id: Union!) {
+	client (id: $id)  {
+		id
+		cpf
+		completeName
+		bankAccounts {
+			id
+			balance
+		}
+	}
+}
