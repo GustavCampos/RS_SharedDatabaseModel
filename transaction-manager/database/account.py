@@ -5,8 +5,8 @@ from database.operations import OperationHandler, write_operation, read_operatio
 from .table_model import BankAccount
 
 class AccountHandler(OperationHandler):
-    def __init__(self, sessionmaker: sessionmaker, filelock: FileLock, pwd_salt: int = 6) -> None:
-        super().__init__(sessionmaker, filelock)
+    def __init__(self, filelock: FileLock, pwd_salt: int = 6) -> None:
+        super().__init__(filelock)
         self.pwd_salt = pwd_salt
     
     # Read operations _____________________________________________________________

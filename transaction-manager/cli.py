@@ -12,10 +12,10 @@ class AccountManagerCLI(Cmd):
     intro = 'Welcome to the Transaction Manager CLI. Type help or ? to list commands.\n'
     prompt = '(transaction-manager) '
     
-    def __init__(self, session_maker: sessionmaker, filelock: FileLock) -> None:
-        self.account = AccountHandler(session_maker, filelock)
-        self.client = ClientHandler(session_maker, filelock)
-        self.transaction = TransactionHandler(session_maker, filelock)
+    def __init__(self, filelock: FileLock) -> None:
+        self.account = AccountHandler(filelock)
+        self.client = ClientHandler(filelock)
+        self.transaction = TransactionHandler(filelock)
         
         super().__init__()
         

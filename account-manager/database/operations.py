@@ -1,21 +1,53 @@
+import os
 from filelock import FileLock
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker, scoped_session
 from functools import wraps
 
+from database.table_model import get_declarative_base
+
+DB_PATH = os.getenv("DATABASE_PATH")
+if not DB_PATH:
+    raise EnvironmentError("DATABASE_PATH environment variable is not set")
+
+DB_FILE = os.path.realpath(DB_PATH)
+LOCK_FILE = f"{DB_FILE}.lock"
+
+def get_engine():
+    return create_engine(f"duckdb:///{DB_FILE}")
+
+def create_access(create_table=False):
+    engine = get_engine()
+    sqa_base = get_declarative_base()
+    
+    smaker = scoped_session(
+        sessionmaker(
+            bind=engine, 
+            autocommit=False, 
+            autoflush=False
+        )
+    )
+    
+    if create_table:
+        sqa_base.metadata.create_all(bind=engine)
+    
+    sqa_base.metadata.reflect(bind=engine) # Load metadata 
+    
+    return [engine, smaker]
 
 class OperationHandler:
-    def __init__(self, sessionmaker: sessionmaker, filelock: FileLock) -> None:
-        self.sessionmaker = sessionmaker
+    def __init__(self, filelock: FileLock) -> None:
         self.filelock = filelock
 
 def write_operation(operation_func):
     @wraps(operation_func)
     def wrapper(self, *args, **kwargs):
         filelock = getattr(self, "filelock")
-        sessionmaker = getattr(self, "sessionmaker")
+
+        engine, smaker = create_access()
         
         with filelock:
-            session = sessionmaker()
+            session = smaker()
             
             try:
                 # Evaluates if operation steps were correctly made
@@ -28,7 +60,8 @@ def write_operation(operation_func):
                 raise e
             
             finally:
-                session.remove()
+                smaker.remove()
+                engine.dispose()  # Dispose of the engine here
                 
         return result
     return wrapper
@@ -36,12 +69,13 @@ def write_operation(operation_func):
 def read_operation(operation_func):
     @wraps(operation_func)
     def wrapper(self, *args, **kwargs):
-        sessionmaker = getattr(self, "sessionmaker")
-        session = sessionmaker()
+        engine, smaker = create_access()
+        session = smaker()
         
         result = operation_func(self, *args, db_session=session, **kwargs)
         
-        session.remove()
+        smaker.remove()
+        engine.dispose()  # Dispose of the engine here
         
         return result
     return wrapper
