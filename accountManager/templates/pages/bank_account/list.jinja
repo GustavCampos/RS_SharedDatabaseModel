@@ -1,8 +1,0 @@
-{% extends "components/html.jinja" %}
-{% from "components/macros/table.jinja" import clickable_table%}
-
-{% block content %}
-<main class="container">
-    {{ clickable_table(**bank_accounts_table) }}
-</main>
-{% endblock content %}

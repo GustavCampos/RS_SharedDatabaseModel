@@ -1,7 +1,0 @@
-strawberry-graphql[flask]
-strawberry-sqlalchemy-mapper
-duckdb-engine
-flask[async]
-flask_cors
-python-dotenv
-bcrypt

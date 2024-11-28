@@ -1,0 +1,7 @@
+bcrypt
+duckdb
+duckdb_engine
+filelock
+prettytable
+python-dotenv
+SQLAlchemy
